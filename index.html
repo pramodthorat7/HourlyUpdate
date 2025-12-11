@@ -1,0 +1,1474 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1" />
+    <title>Production Dashboard</title>
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --muted: #64748b;
+            --accent: #0f172a;
+            --primary: #0ea5a4;
+            --btn: #0ea5a4;
+            --danger: #ef4444;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --border: #e2e8f0;
+            --shadow: rgba(2, 6, 23, 0.04);
+            --auto-bg: #f0fdfa;
+            --auto-color: #0d9488;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg);
+            color: var(--accent);
+            -webkit-font-smoothing: antialiased;
+            line-height: 1.4;
+            font-size: 14px;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 6px;
+        }
+
+        /* Ultra Compact Header */
+        .header {
+            background: white;
+            padding: 6px;
+            border-radius: 4px;
+            box-shadow: 0 1px 1px var(--shadow);
+            margin-bottom: 6px;
+        }
+
+        h1 {
+            font-size: 14px;
+            font-weight: 700;
+            margin: 0 0 2px 0;
+            color: var(--accent);
+        }
+
+        .lead {
+            font-size: 10px;
+            color: var(--muted);
+            margin-bottom: 6px;
+            line-height: 1.2;
+        }
+
+        /* Micro Shift Controls */
+        .shift-controls {
+            background: #f1f5f9;
+            padding: 4px;
+            border-radius: 3px;
+            margin-bottom: 4px;
+        }
+
+        .shift-row {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            margin-bottom: 3px;
+        }
+
+        .shift-input {
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .shift-input label {
+            display: block;
+            font-size: 9px;
+            color: var(--muted);
+            margin-bottom: 1px;
+            font-weight: 500;
+        }
+
+        select,
+        input[type="date"],
+        input[type="time"] {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-size: 11px;
+            background: white;
+            color: var(--accent);
+        }
+
+        /* Fixed Action Bar - Always Visible */
+        .fixed-actions {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: white;
+            padding: 5px;
+            border-radius: 4px;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 6px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 5px;
+        }
+
+        /* Micro Stats */
+        .main-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 5px;
+            margin-bottom: 6px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 5px;
+            border-radius: 3px;
+            border: 1px solid var(--border);
+        }
+
+        .stat-card h3 {
+            font-size: 8px;
+            color: var(--muted);
+            margin-bottom: 1px;
+        }
+
+        .stat-card .value {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        /* Compact Lines Container */
+        .lines-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+
+        /* Ultra Compact Line Card */
+        .line-card {
+            background: white;
+            border-radius: 4px;
+            padding: 6px;
+            box-shadow: 0 1px 1px var(--shadow);
+            border-left: 2px solid var(--primary);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+            padding-bottom: 2px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .card-title {
+            font-weight: 600;
+            font-size: 12px;
+            color: var(--accent);
+        }
+
+        .position-badge {
+            background: #e2e8f0;
+            color: var(--accent);
+            padding: 1px 4px;
+            border-radius: 6px;
+            font-size: 9px;
+            font-weight: 600;
+        }
+
+        /* Input Grid - Like Original */
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 4px;
+            margin-bottom: 6px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            font-size: 9px;
+            color: var(--muted);
+            margin-bottom: 1px;
+        }
+
+        .hour-input {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-size: 11px;
+            background: white;
+            color: var(--accent);
+        }
+
+        .auto-select {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ccfbf1;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 600;
+            background: var(--auto-bg);
+            color: var(--auto-color);
+            text-align: center;
+        }
+
+        /* Commutative Dropdown */
+        .commutative-row {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 4px;
+            align-items: center;
+        }
+
+        .comm-label {
+            font-size: 9px;
+            color: var(--muted);
+            min-width: 60px;
+        }
+
+        .comm-dropdown {
+            flex: 1;
+            padding: 5px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-size: 11px;
+            background: white;
+        }
+
+        /* WIP Section - Original Style */
+        .wip-section {
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 1px dashed #e2e8f0;
+        }
+
+        .wip-title {
+            font-size: 10px;
+            color: var(--muted);
+            margin-bottom: 4px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .model-row {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            margin-bottom: 3px;
+        }
+
+        .model-label {
+            min-width: 70px;
+            font-size: 10px;
+            color: var(--accent);
+        }
+
+        .wip-input {
+            flex: 1;
+            padding: 4px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-size: 10px;
+            max-width: 80px;
+        }
+
+        .set-btn {
+            padding: 4px 6px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            font-size: 9px;
+            cursor: pointer;
+        }
+
+        .wip-total {
+            background: #f1f5f9;
+            padding: 4px 6px;
+            border-radius: 3px;
+            margin-top: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Simple WIP Input */
+        .simple-wip {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            margin-top: 4px;
+        }
+
+        .simple-wip input {
+            flex: 1;
+            padding: 4px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-size: 10px;
+        }
+
+        /* Card Actions */
+        .card-actions {
+            display: flex;
+            gap: 4px;
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .card-actions button {
+            flex: 1;
+            padding: 5px;
+            font-size: 10px;
+            border-radius: 3px;
+        }
+
+        /* Message Section */
+        .message-section {
+            background: white;
+            border-radius: 4px;
+            padding: 6px;
+            box-shadow: 0 1px 1px var(--shadow);
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .message-title {
+            font-weight: 600;
+            font-size: 12px;
+            color: var(--accent);
+        }
+
+        .message-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 3px;
+            margin-bottom: 4px;
+        }
+
+        .message-preview {
+            background: #1e293b;
+            color: white;
+            padding: 6px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 10px;
+            line-height: 1.2;
+            white-space: pre-wrap;
+            max-height: 160px;
+            overflow-y: auto;
+            margin-bottom: 4px;
+        }
+
+        /* Buttons */
+        button {
+            padding: 6px;
+            border: none;
+            border-radius: 3px;
+            font-weight: 600;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            min-height: 32px;
+        }
+
+        .btn-primary {
+            background: var(--btn);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: var(--accent);
+            border: 1px solid var(--border);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        /* Footer */
+        .footer {
+            font-size: 8px;
+            color: var(--muted);
+            text-align: center;
+            padding: 4px;
+            border-top: 1px solid #f1f5f9;
+            margin-top: 4px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 6px;
+            right: 6px;
+            left: 6px;
+            background: var(--accent);
+            color: white;
+            padding: 8px;
+            border-radius: 3px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 11px;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Time Indicators */
+        .time-indicator {
+            font-size: 8px;
+            padding: 1px 3px;
+            border-radius: 2px;
+            font-weight: 600;
+        }
+
+        .time-night {
+            background: #1e293b;
+            color: white;
+        }
+
+        .time-morning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .time-afternoon {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        /* Responsive */
+        @media (min-width: 640px) {
+            .container {
+                padding: 8px;
+            }
+
+            .fixed-actions,
+            .message-actions {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .lines-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Input focus */
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(14, 165, 164, 0.1);
+        }
+
+        /* Hide number input arrows */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Ultra Compact Header -->
+        <div class="header">
+            <h1>Production Dashboard</h1>
+            <p class="lead">Hourly tracking with shift-based data management</p>
+
+            <!-- Micro Shift Controls -->
+            <div class="shift-controls">
+                <div class="shift-row">
+                    <div class="shift-input">
+                        <label>Date</label>
+                        <input type="date" id="shiftDate" value="">
+                    </div>
+                    <div class="shift-input">
+                        <label>Shift</label>
+                        <select id="shiftType">
+                            <option value="night">Night (12-7)</option>
+                            <option value="morning">Morning (7-3:30)</option>
+                            <option value="afternoon">Afternoon (3:30-12)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="shift-row">
+                    <div class="shift-input">
+                        <label>Hour</label>
+                        <select id="currentHour">
+                            <!-- Filled by JS -->
+                        </select>
+                    </div>
+                    <div style="flex: 1; display: flex; align-items: flex-end;">
+                        <button id="resetShiftBtn" class="btn-danger"
+                            style="width: 100%; padding: 5px; font-size: 10px;">
+                            Reset Shift
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fixed Action Bar - Always Visible -->
+        <div class="fixed-actions">
+            <button id="applyAllBtn" class="btn-success">Apply All</button>
+            <button id="generateBtn" class="btn-primary">Generate</button>
+            <button id="copyBtn" class="btn-secondary">Copy</button>
+            <button id="resetAllBtn" class="btn-secondary">Reset All</button>
+        </div>
+
+        <!-- Micro Stats -->
+        <div class="main-stats">
+            <div class="stat-card">
+                <h3>Hour Prod</h3>
+                <div class="value" id="totalHourly">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total WIP</h3>
+                <div class="value" id="totalWIP">0</div>
+            </div>
+        </div>
+
+        <!-- Production Lines -->
+        <div class="lines-container" id="linesContainer">
+            <!-- Lines will be populated by JavaScript -->
+        </div>
+
+        <!-- Message Section -->
+        <div class="message-section">
+            <div class="message-header">
+                <div class="message-title">WhatsApp Message</div>
+                <div id="shiftIndicator" class="time-indicator time-morning">Morning</div>
+            </div>
+
+            <div class="message-actions">
+                <button id="copyMessageBtn" class="btn-secondary">Copy</button>
+                <button id="clearMessageBtn" class="btn-secondary">Clear</button>
+                <button id="openWhatsAppBtn" class="btn-primary">WhatsApp</button>
+                <button id="saveTemplateBtn" class="btn-secondary">Save</button>
+            </div>
+
+            <div class="message-preview" id="messagePreview">
+                Click Generate to create message
+            </div>
+        </div>
+
+        <div class="footer">
+            Apply adds production to WIP and subtracts from upstream. Shift change resets data.
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <span id="toastMessage">Operation completed</span>
+    </div>
+
+    <script>
+        // ==================== CONFIGURATION ====================
+        const workflow = [
+            "Potting",
+            "MOSFET IGBT",
+            "THT",
+            "Conformal Coating",
+            "Pre-housing",
+            "Calibration",
+            "PDU",
+            "Burn-in",
+            "ReEOL",
+            "Dispatch"
+        ];
+
+        const THT_COATING_MODELS = [
+            { key: "mainboard", label: "Main Board" },
+            { key: "k3lr", label: "K3LR" },
+            { key: "challenger", label: "Challenger" }
+        ];
+
+        const REEOL_BURN_MODELS = [
+            { key: "challenger", label: "Challenger" },
+            { key: "k3lr", label: "K3LR" }
+        ];
+
+        const PDU_DISPATCH_MODELS = [
+            { key: "k3lr", label: "K3LR" },
+            { key: "challenger", label: "Challenger" },
+            { key: "eturna_v1", label: "Eturna V1" },
+            { key: "eturna_v2", label: "Eturna V2" }
+        ];
+
+        // Shift Configuration
+        const SHIFTS = {
+            night: { name: "Night", start: 0, end: 7, color: "time-night" },
+            morning: { name: "Morning", start: 7, end: 15.5, color: "time-morning" },
+            afternoon: { name: "Afternoon", start: 15.5, end: 24, color: "time-afternoon" }
+        };
+
+        // Initial state - with sample data for testing
+        const initialState = {
+            "Potting": { hourCount: 0, commutativeAuto: 118, wip: 368 },
+            "MOSFET IGBT": { hourCount: 0, commutativeAuto: 70, wip: 28 },
+            "THT": { hourCount: 0, commutativeAuto: 79, modelWip: { mainboard: 420, k3lr: 462, challenger: 336 } },
+            "Conformal Coating": { hourCount: 0, commutativeAuto: 92, modelWip: { mainboard: 420, k3lr: 462, challenger: 336 } },
+            "Pre-housing": { hourCount: 0, commutativeAuto: 76, wip: 214 },
+            "Calibration": { hourCount: 0, commutativeAuto: 28, wip: 0 },
+            "PDU": { hourCount: 0, commutativeAuto: 96, modelWip: { k3lr: 63, challenger: 20, eturna_v1: 0, eturna_v2: 90 } },
+            "Burn-in": { hourCount: 0, commutativeAuto: 45, modelWip: { k3lr: 75, challenger: 0 } },
+            "ReEOL": { hourCount: 0, commutativeAuto: 53, modelWip: { k3lr: 0, challenger: 0 } },
+            "Dispatch": { hourCount: 0, commutativeAuto: 0, modelWip: { k3lr: 63, challenger: 20, eturna_v1: 0, eturna_v2: 90 } }
+        };
+
+        // App State
+        const state = {};
+        let currentShift = 'morning';
+        let shiftDate = '';
+        let currentHour = '';
+        let shiftDataLoaded = false;
+
+        // ==================== INITIALIZATION ====================
+        function initApp() {
+            // Set default date to today
+            const today = new Date();
+            shiftDate = today.toISOString().split('T')[0];
+            document.getElementById('shiftDate').value = shiftDate;
+
+            // Determine current shift based on time
+            const currentHourNum = today.getHours() + (today.getMinutes() / 60);
+            if (currentHourNum >= 0 && currentHourNum < 7) {
+                currentShift = 'night';
+            } else if (currentHourNum >= 7 && currentHourNum < 15.5) {
+                currentShift = 'morning';
+            } else {
+                currentShift = 'afternoon';
+            }
+
+            document.getElementById('shiftType').value = currentShift;
+            updateShiftIndicator();
+            populateHourDropdown();
+
+            // Initialize state
+            resetState();
+
+            // Load saved data for current shift
+            loadShiftData();
+
+            // Render UI
+            renderLines();
+            updateStats();
+
+            // Generate initial message
+            setTimeout(() => {
+                updateMessagePreview();
+            }, 100);
+        }
+
+        function loadShiftData() {
+            const shiftKey = `${shiftDate}_${currentShift}`;
+            const saved = localStorage.getItem(`prod_${shiftKey}`);
+
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    Object.keys(parsed).forEach(line => {
+                        if (state[line]) {
+                            state[line].hourCount = parsed[line].hourCount || 0;
+                            state[line].commutativeAuto = parsed[line].commutativeAuto || 0;
+                            state[line].wip = parsed[line].wip || 0;
+                            if (parsed[line].modelWip) {
+                                state[line].modelWip = { ...parsed[line].modelWip };
+                            }
+                        }
+                    });
+                    shiftDataLoaded = true;
+                    showToast('Shift data loaded');
+                } catch (e) {
+                    console.error('Error loading shift data:', e);
+                    shiftDataLoaded = false;
+                }
+            } else {
+                shiftDataLoaded = false;
+            }
+        }
+
+        function saveShiftData() {
+            const shiftKey = `${shiftDate}_${currentShift}`;
+            localStorage.setItem(`prod_${shiftKey}`, JSON.stringify(state));
+            shiftDataLoaded = true;
+        }
+
+        function resetState() {
+            workflow.forEach(line => {
+                const src = initialState[line];
+                state[line] = {
+                    hourCount: src.hourCount || 0,
+                    commutativeAuto: src.commutativeAuto || 0,
+                    wip: src.wip || 0,
+                    modelWip: src.modelWip ? { ...src.modelWip } : {}
+                };
+            });
+        }
+
+        function resetShiftData() {
+            if (confirm('Reset all data for current shift? All values will be set to zero.')) {
+                resetState();
+                saveShiftData();
+                renderLines();
+                updateStats();
+                updateMessagePreview();
+                showToast('Shift data reset');
+            }
+        }
+
+        // ==================== SHIFT MANAGEMENT ====================
+        function updateShiftIndicator() {
+            const indicator = document.getElementById('shiftIndicator');
+            const shift = SHIFTS[currentShift];
+            indicator.textContent = shift.name;
+            indicator.className = 'time-indicator ' + shift.color;
+        }
+
+        function populateHourDropdown() {
+            const select = document.getElementById('currentHour');
+            select.innerHTML = '';
+
+            const shift = SHIFTS[currentShift];
+
+            // Morning shift (includes 3:00-3:30)
+            if (currentShift === 'morning') {
+                const hours = [
+                    '07:00-08:00', '08:00-09:00', '09:00-10:00', '10:00-11:00',
+                    '11:00-12:00', '12:00-13:00', '13:00-14:00', '14:00-15:00',
+                    '15:00-15:30'
+                ];
+                hours.forEach(hour => {
+                    const option = document.createElement('option');
+                    option.value = hour;
+                    option.textContent = hour;
+                    select.appendChild(option);
+                });
+            }
+            // Afternoon shift (includes 3:30-4:00)
+            else if (currentShift === 'afternoon') {
+                const hours = [
+                    '15:30-16:00',
+                    '16:00-17:00', '17:00-18:00', '18:00-19:00',
+                    '19:00-20:00', '20:00-21:00', '21:00-22:00',
+                    '22:00-23:00', '23:00-00:00'
+                ];
+                hours.forEach(hour => {
+                    const option = document.createElement('option');
+                    option.value = hour;
+                    option.textContent = hour;
+                    select.appendChild(option);
+                });
+            }
+            // Night shift
+            else {
+                for (let i = 0; i < 7; i++) {
+                    const hour = i.toString().padStart(2, '0');
+                    const nextHour = (i + 1).toString().padStart(2, '0');
+                    const hourStr = `${hour}:00-${nextHour}:00`;
+
+                    const option = document.createElement('option');
+                    option.value = hourStr;
+                    option.textContent = hourStr;
+                    select.appendChild(option);
+                }
+            }
+
+            // Set current hour based on actual time
+            const now = new Date();
+            const currentHourNum = now.getHours() + (now.getMinutes() / 60);
+
+            if (currentHourNum >= shift.start && currentHourNum < shift.end) {
+                let closestHour = Math.floor(currentHourNum);
+                if (currentShift === 'morning' && currentHourNum >= 15 && currentHourNum < 15.5) {
+                    select.value = '15:00-15:30';
+                } else if (currentShift === 'afternoon' && currentHourNum >= 15.5 && currentHourNum < 16) {
+                    select.value = '15:30-16:00';
+                } else {
+                    select.value = `${String(closestHour).padStart(2, '0')}:00-${String((closestHour + 1) % 24).padStart(2, '0')}:00`;
+                }
+            } else {
+                // Default to first hour of shift
+                select.selectedIndex = 0;
+            }
+
+            currentHour = select.value;
+        }
+
+        // ==================== RENDERING ====================
+        function renderLines() {
+            const container = document.getElementById('linesContainer');
+            container.innerHTML = '';
+
+            workflow.forEach((lineName, idx) => {
+                const line = state[lineName];
+                const card = document.createElement('div');
+                card.className = 'line-card';
+
+                // Header
+                const header = document.createElement('div');
+                header.className = 'card-header';
+                header.innerHTML = `
+      <div class="card-title">${lineName}</div>
+      <div class="position-badge">${idx + 1}</div>
+    `;
+                card.appendChild(header);
+
+                // Input Grid - Hour Count and Commutative Auto
+                const inputGrid = document.createElement('div');
+                inputGrid.className = 'input-grid';
+
+                // Hour Count Input (skip for Dispatch)
+                if (lineName !== "Dispatch") {
+                    const hourGroup = document.createElement('div');
+                    hourGroup.className = 'input-group';
+                    hourGroup.innerHTML = `
+        <label>This Hour</label>
+        <input type="number" min="0" class="hour-input" value="${line.hourCount}" 
+               data-line="${lineName}" data-field="hourCount" placeholder="0">
+      `;
+                    inputGrid.appendChild(hourGroup);
+                } else {
+                    // Empty placeholder for Dispatch to maintain grid
+                    const emptyGroup = document.createElement('div');
+                    emptyGroup.className = 'input-group';
+                    emptyGroup.innerHTML = `<label>Hour</label><div style="padding: 5px; color: var(--muted); font-size: 10px;">N/A</div>`;
+                    inputGrid.appendChild(emptyGroup);
+                }
+
+                // Commutative Auto (Dropdown)
+                const autoGroup = document.createElement('div');
+                autoGroup.className = 'input-group';
+                autoGroup.innerHTML = `
+      <label>Commutative</label>
+      <select class="auto-select" data-line="${lineName}" data-field="commutativeAuto">
+        <option value="${line.commutativeAuto}">${line.commutativeAuto} (Current)</option>
+        <option value="${line.commutativeAuto + 10}">${line.commutativeAuto + 10} (+10)</option>
+        <option value="${line.commutativeAuto + 20}">${line.commutativeAuto + 20} (+20)</option>
+        <option value="${line.commutativeAuto + 50}">${line.commutativeAuto + 50} (+50)</option>
+        <option value="custom">Custom Value</option>
+      </select>
+    `;
+                inputGrid.appendChild(autoGroup);
+
+                card.appendChild(inputGrid);
+
+                // Custom Commutative Input (hidden by default)
+                const customCommRow = document.createElement('div');
+                customCommRow.className = 'commutative-row';
+                customCommRow.style.display = 'none';
+                customCommRow.id = `custom-comm-${lineName}`;
+                customCommRow.innerHTML = `
+      <div class="comm-label">Custom:</div>
+      <input type="number" class="comm-dropdown" placeholder="Enter value" min="0">
+      <button class="set-btn" style="font-size: 8px; padding: 3px 4px;" data-line="${lineName}" data-field="commutativeCustom">Set</button>
+    `;
+                card.appendChild(customCommRow);
+
+                // WIP Section - Original Style
+                const wipSection = document.createElement('div');
+                wipSection.className = 'wip-section';
+
+                const wipTitle = document.createElement('div');
+                wipTitle.className = 'wip-title';
+                wipTitle.textContent = 'WIP';
+                wipSection.appendChild(wipTitle);
+
+                // WIP based on line type
+                if (line.modelWip && Object.keys(line.modelWip).length > 0) {
+                    // Model-based WIP
+                    const modelKeys = Object.keys(line.modelWip);
+                    modelKeys.forEach(modelKey => {
+                        const row = document.createElement('div');
+                        row.className = 'model-row';
+
+                        // Get model label
+                        let label = modelKey;
+                        const allModels = [...THT_COATING_MODELS, ...PDU_DISPATCH_MODELS, ...REEOL_BURN_MODELS];
+                        const modelInfo = allModels.find(m => m.key === modelKey);
+                        if (modelInfo) label = modelInfo.label;
+
+                        row.innerHTML = `
+          <div class="model-label">${label}</div>
+          <input type="number" class="wip-input" value="${line.modelWip[modelKey]}" 
+                 data-line="${lineName}" data-model="${modelKey}" min="0">
+          <button class="set-btn" data-line="${lineName}" data-model="${modelKey}">Set</button>
+        `;
+                        wipSection.appendChild(row);
+                    });
+
+                    // Total WIP
+                    const total = Object.values(line.modelWip).reduce((sum, val) => sum + (Number(val) || 0), 0);
+                    const totalDiv = document.createElement('div');
+                    totalDiv.className = 'wip-total';
+                    totalDiv.innerHTML = `<span>Total WIP</span><span>${total}</span>`;
+                    wipSection.appendChild(totalDiv);
+                } else {
+                    // Simple WIP input
+                    const simpleWip = document.createElement('div');
+                    simpleWip.className = 'simple-wip';
+                    simpleWip.innerHTML = `
+        <input type="number" value="${line.wip}" data-line="${lineName}" data-field="wip" min="0" style="flex: 1;">
+        <button class="set-btn" data-line="${lineName}" data-field="wip">Set WIP</button>
+        <div style="font-size: 9px; color: var(--muted);">Current: ${line.wip}</div>
+      `;
+                    wipSection.appendChild(simpleWip);
+                }
+
+                card.appendChild(wipSection);
+
+                // Actions (Skip for Dispatch)
+                if (lineName !== "Dispatch") {
+                    const actions = document.createElement('div');
+                    actions.className = 'card-actions';
+                    actions.innerHTML = `
+        <button class="btn-success" data-line="${lineName}" data-action="apply">Apply</button>
+        <button class="btn-secondary" data-line="${lineName}" data-action="reset">Reset Line</button>
+      `;
+                    card.appendChild(actions);
+                }
+
+                container.appendChild(card);
+            });
+
+            // Attach event listeners
+            attachEventListeners();
+        }
+
+        function attachEventListeners() {
+            // Hour count inputs - select all text on focus
+            document.querySelectorAll('.hour-input').forEach(input => {
+                input.addEventListener('focus', function () {
+                    setTimeout(() => this.select(), 10);
+                });
+
+                input.addEventListener('input', (e) => {
+                    const line = e.target.dataset.line;
+                    const value = parseInt(e.target.value) || 0;
+                    if (line) {
+                        state[line].hourCount = value;
+                        updateStats();
+                        updateMessagePreview();
+                    }
+                });
+            });
+
+            // Commutative dropdowns
+            document.querySelectorAll('.auto-select').forEach(select => {
+                select.addEventListener('change', (e) => {
+                    const line = e.target.dataset.line;
+                    const value = e.target.value;
+
+                    if (value === 'custom') {
+                        // Show custom input
+                        document.getElementById(`custom-comm-${line}`).style.display = 'flex';
+                        e.target.style.display = 'none';
+                    } else {
+                        // Set commutative value
+                        state[line].commutativeAuto = parseInt(value) || 0;
+                        updateMessagePreview();
+                        showToast(`Commutative set to ${value}`);
+                    }
+                });
+            });
+
+            // Custom commutative set buttons
+            document.querySelectorAll('button[data-field="commutativeCustom"]').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const line = e.target.dataset.line;
+                    const input = e.target.previousElementSibling;
+                    const value = parseInt(input.value) || 0;
+
+                    state[line].commutativeAuto = value;
+
+                    // Hide custom input, show dropdown again
+                    const customRow = document.getElementById(`custom-comm-${line}`);
+                    customRow.style.display = 'none';
+                    const dropdown = customRow.previousElementSibling.querySelector('.auto-select');
+                    dropdown.style.display = 'block';
+                    dropdown.innerHTML = `<option value="${value}">${value} (Current)</option>
+                           <option value="${value + 10}">${value + 10} (+10)</option>
+                           <option value="${value + 20}">${value + 20} (+20)</option>
+                           <option value="${value + 50}">${value + 50} (+50)</option>
+                           <option value="custom">Custom Value</option>`;
+                    dropdown.value = value;
+
+                    updateMessagePreview();
+                    showToast(`Commutative set to ${value}`);
+                });
+            });
+
+            // WIP inputs
+            document.querySelectorAll('.wip-input').forEach(input => {
+                input.addEventListener('input', (e) => {
+                    const line = e.target.dataset.line;
+                    const model = e.target.dataset.model;
+                    const value = parseInt(e.target.value) || 0;
+
+                    if (model) {
+                        state[line].modelWip[model] = value;
+                    }
+                    updateStats();
+                    updateMessagePreview();
+                });
+            });
+
+            // Set WIP buttons
+            document.querySelectorAll('.set-btn[data-model], .set-btn[data-field="wip"]').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const line = e.target.dataset.line;
+                    const model = e.target.dataset.model;
+                    const field = e.target.dataset.field;
+
+                    if (model) {
+                        const input = e.target.previousElementSibling;
+                        const value = parseInt(input.value) || 0;
+                        state[line].modelWip[model] = value;
+                        showToast(`${model} WIP set to ${value}`);
+                    } else if (field === 'wip') {
+                        const input = button.parentElement.querySelector('input');
+                        const value = parseInt(input.value) || 0;
+                        state[line].wip = value;
+                        showToast('WIP set to ' + value);
+                    }
+
+                    updateStats();
+                    updateMessagePreview();
+                    saveShiftData();
+                });
+            });
+
+            // Apply buttons
+            document.querySelectorAll('button[data-action="apply"]').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const line = e.target.dataset.line;
+                    applyProduction(line);
+                });
+            });
+
+            // Reset buttons
+            document.querySelectorAll('button[data-action="reset"]').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const line = e.target.dataset.line;
+                    state[line].hourCount = 0;
+                    renderLines();
+                    updateStats();
+                    updateMessagePreview();
+                    showToast(`${line} hour count reset`);
+                });
+            });
+        }
+
+        // ==================== PRODUCTION LOGIC ====================
+        function toInt(x) { return Number(x) || 0; }
+
+        function addProducedToLineWip(lineName, produced) {
+            const line = state[lineName];
+            const modelKeys = Object.keys(line.modelWip || {});
+
+            if (modelKeys.length === 0) {
+                // Simple WIP line
+                line.wip = toInt(line.wip) + toInt(produced);
+            } else {
+                // Model-based WIP line - distribute proportionally
+                const modelObj = line.modelWip;
+                const totalBefore = Object.values(modelObj).reduce((a, b) => a + toInt(b), 0);
+
+                if (totalBefore > 0) {
+                    // Distribute proportionally to existing distribution
+                    modelKeys.forEach(key => {
+                        const share = Math.round((toInt(modelObj[key]) / totalBefore) * produced);
+                        modelObj[key] = toInt(modelObj[key]) + share;
+                    });
+
+                    // Adjust for rounding errors
+                    const added = Object.values(modelObj).reduce((a, b) => a + toInt(b), 0) - totalBefore;
+                    if (added !== produced) {
+                        const diff = produced - added;
+                        modelObj[modelKeys[0]] = toInt(modelObj[modelKeys[0]]) + diff;
+                    }
+                } else {
+                    // If no existing WIP, put all into first model
+                    modelObj[modelKeys[0]] = toInt(modelObj[modelKeys[0]]) + produced;
+                }
+            }
+        }
+
+        function subtractFromUpstreamWip(upstreamName, produced) {
+            if (!upstreamName || produced <= 0) return;
+
+            const up = state[upstreamName];
+            const modelKeys = Object.keys(up.modelWip || {});
+
+            if (modelKeys.length > 0) {
+                // Model-based upstream - subtract proportionally
+                const total = Object.values(up.modelWip).reduce((a, b) => a + toInt(b), 0);
+                if (total > 0) {
+                    let remaining = toInt(produced);
+
+                    modelKeys.forEach(key => {
+                        if (remaining <= 0) return;
+                        const avail = toInt(up.modelWip[key]);
+                        const take = Math.min(avail, Math.round((avail / total) * produced));
+                        up.modelWip[key] = Math.max(0, avail - take);
+                        remaining -= take;
+                    });
+
+                    // If still remaining, drain from first model
+                    if (remaining > 0) {
+                        const firstKey = modelKeys[0];
+                        up.modelWip[firstKey] = Math.max(0, toInt(up.modelWip[firstKey]) - remaining);
+                    }
+                }
+            } else {
+                // Simple WIP upstream
+                up.wip = Math.max(0, toInt(up.wip) - produced);
+            }
+        }
+
+        function applyProduction(lineName) {
+            const idx = workflow.indexOf(lineName);
+            const line = state[lineName];
+            const produced = toInt(line.hourCount);
+
+            if (produced <= 0) {
+                showToast('Enter hour count first');
+                return;
+            }
+
+            // Update commutative auto
+            line.commutativeAuto = toInt(line.commutativeAuto) + produced;
+
+            // Add produced to this line's WIP
+            addProducedToLineWip(lineName, produced);
+
+            // Subtract produced from upstream (consumed)
+            if (idx > 0) {
+                const upstreamName = workflow[idx - 1];
+                subtractFromUpstreamWip(upstreamName, produced);
+            }
+
+            // Reset hour count after applying
+            line.hourCount = 0;
+
+            // Save and update
+            saveShiftData();
+            renderLines();
+            updateStats();
+            updateMessagePreview();
+            showToast(`Applied ${produced} units to ${lineName}`);
+        }
+
+        function applyAll() {
+            let appliedCount = 0;
+            workflow.forEach(line => {
+                if (line !== "Dispatch" && state[line].hourCount > 0) {
+                    applyProduction(line);
+                    appliedCount++;
+                }
+            });
+
+            if (appliedCount === 0) {
+                showToast('No hour counts to apply');
+            } else {
+                showToast(`Applied ${appliedCount} production lines`);
+            }
+        }
+
+        // ==================== STATS ====================
+        function updateStats() {
+            // Total hourly production (exclude Dispatch)
+            const totalHourly = workflow.reduce((sum, line) => {
+                if (line !== "Dispatch") {
+                    return sum + toInt(state[line].hourCount);
+                }
+                return sum;
+            }, 0);
+            document.getElementById('totalHourly').textContent = totalHourly;
+
+            // Total WIP
+            let totalWIP = 0;
+            workflow.forEach(line => {
+                const lineData = state[line];
+                if (lineData.modelWip) {
+                    totalWIP += Object.values(lineData.modelWip).reduce((sum, val) => sum + toInt(val), 0);
+                } else {
+                    totalWIP += toInt(lineData.wip);
+                }
+            });
+            document.getElementById('totalWIP').textContent = totalWIP;
+        }
+
+        // ==================== MESSAGE GENERATION ====================
+        function generateMessage() {
+            const shift = SHIFTS[currentShift];
+            const date = new Date(shiftDate);
+            const dateStr = date.toLocaleDateString('en-GB');
+
+            let message = `Date - ${dateStr}\n`;
+            message += `Shift - ${shift.name}\n`;
+            message += `Hour - ${currentHour}\n\n`;
+
+            // Production lines (excluding Dispatch)
+            workflow.forEach(lineName => {
+                if (lineName === "Dispatch") return;
+
+                const line = state[lineName];
+                const hourCount = toInt(line.hourCount);
+                const commutative = toInt(line.commutativeAuto);
+
+                // Always show the line
+                message += `${lineName} - ${hourCount} Nos\n`;
+                message += `Commutative - ${commutative}\n`;
+
+                // WIP - show current WIP
+                if (line.modelWip) {
+                    const modelEntries = [];
+                    Object.keys(line.modelWip).forEach(modelKey => {
+                        const count = toInt(line.modelWip[modelKey]);
+
+                        // Filter out K3LR, Challenger, Eturna V1, V2 if count is 0
+                        const modelsToFilter = ['k3lr', 'challenger', 'eturna_v1', 'eturna_v2'];
+                        if (count > 0 || !modelsToFilter.includes(modelKey)) {
+                            let label = modelKey;
+                            const allModels = [...THT_COATING_MODELS, ...PDU_DISPATCH_MODELS, ...REEOL_BURN_MODELS];
+                            const modelInfo = allModels.find(m => m.key === modelKey);
+                            if (modelInfo) label = modelInfo.label;
+                            modelEntries.push(`${label} - ${count}`);
+                        }
+                    });
+
+                    if (modelEntries.length > 0) {
+                        message += `WIP - ${modelEntries.join(' | ')}\n`;
+                    }
+                } else if (line.wip > 0) {
+                    message += `WIP - ${line.wip} Nos\n`;
+                }
+
+                message += '\n';
+            });
+
+            // Dispatch section (only WIP, without "WIP" label)
+            const dispatch = state["Dispatch"];
+            if (dispatch && dispatch.modelWip) {
+                const dispatchItems = [];
+                Object.keys(dispatch.modelWip).forEach(modelKey => {
+                    const count = toInt(dispatch.modelWip[modelKey]);
+                    if (count > 0) {
+                        let label = modelKey;
+                        const modelInfo = PDU_DISPATCH_MODELS.find(m => m.key === modelKey);
+                        if (modelInfo) label = modelInfo.label;
+                        dispatchItems.push(`${label} - ${count}`);
+                    }
+                });
+
+                if (dispatchItems.length > 0) {
+                    message += 'Packaged and ready to dispatch\n';
+                    dispatchItems.forEach(item => {
+                        message += `${item}\n`;
+                    });
+                }
+            }
+
+            return message;
+        }
+
+        function updateMessagePreview() {
+            const message = generateMessage();
+            document.getElementById('messagePreview').textContent = message;
+        }
+
+        function copyMessage() {
+            const message = document.getElementById('messagePreview').textContent;
+            if (message === 'Click Generate to create message') {
+                showToast('Generate a message first');
+                return;
+            }
+
+            navigator.clipboard.writeText(message).then(() => {
+                showToast('Message copied to clipboard');
+            }).catch(() => {
+                // Fallback
+                const textarea = document.createElement('textarea');
+                textarea.value = message;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showToast('Message copied');
+            });
+        }
+
+        function openWhatsApp() {
+            const message = document.getElementById('messagePreview').textContent;
+            if (message === 'Click Generate to create message') {
+                showToast('Generate a message first');
+                return;
+            }
+
+            const encoded = encodeURIComponent(message);
+            window.open(`https://wa.me/?text=${encoded}`, '_blank');
+        }
+
+        // ==================== UI CONTROLS ====================
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMessage');
+
+            toastMsg.textContent = message;
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        // ==================== EVENT LISTENERS ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize app
+            initApp();
+
+            // Shift date change - reset data
+            document.getElementById('shiftDate').addEventListener('change', (e) => {
+                shiftDate = e.target.value;
+                resetState();
+                loadShiftData();
+                renderLines();
+                updateStats();
+                updateMessagePreview();
+            });
+
+            // Shift type change - reset data
+            document.getElementById('shiftType').addEventListener('change', (e) => {
+                currentShift = e.target.value;
+                updateShiftIndicator();
+                populateHourDropdown();
+                resetState();
+                loadShiftData();
+                renderLines();
+                updateStats();
+                updateMessagePreview();
+            });
+
+            // Current hour change
+            document.getElementById('currentHour').addEventListener('change', (e) => {
+                currentHour = e.target.value;
+                updateMessagePreview();
+            });
+
+            // Reset shift button
+            document.getElementById('resetShiftBtn').addEventListener('click', resetShiftData);
+
+            // Main controls
+            document.getElementById('applyAllBtn').addEventListener('click', applyAll);
+            document.getElementById('generateBtn').addEventListener('click', () => {
+                updateMessagePreview();
+                showToast('Message generated');
+            });
+            document.getElementById('copyBtn').addEventListener('click', copyMessage);
+            document.getElementById('resetAllBtn').addEventListener('click', () => {
+                if (confirm('Reset ALL data for ALL shifts? This will delete all saved data.')) {
+                    localStorage.clear();
+                    resetState();
+                    renderLines();
+                    updateStats();
+                    updateMessagePreview();
+                    showToast('All data reset');
+                }
+            });
+
+            // Message controls
+            document.getElementById('copyMessageBtn').addEventListener('click', copyMessage);
+            document.getElementById('clearMessageBtn').addEventListener('click', () => {
+                document.getElementById('messagePreview').textContent = 'Click Generate to create message';
+                showToast('Message cleared');
+            });
+            document.getElementById('openWhatsAppBtn').addEventListener('click', openWhatsApp);
+            document.getElementById('saveTemplateBtn').addEventListener('click', () => {
+                saveShiftData();
+                showToast('Data saved for current shift');
+            });
+
+            // Auto-save on input changes
+            let saveTimeout;
+            document.addEventListener('input', () => {
+                clearTimeout(saveTimeout);
+                saveTimeout = setTimeout(() => {
+                    saveShiftData();
+                }, 1000);
+            });
+        });
+
+        // Auto-save on page unload
+        window.addEventListener('beforeunload', () => {
+            saveShiftData();
+        });
+
+        // Handle Enter key in hour inputs
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && e.target.classList.contains('hour-input')) {
+                const line = e.target.dataset.line;
+                if (line) {
+                    applyProduction(line);
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
